@@ -1,7 +1,7 @@
 #include "./headers/server.h"
 #include <httplib.h>
 
-RestServer::RestServer() {}
+RestServer::RestServer() {};
 
 void RestServer::start() {
     httplib::Server svr;

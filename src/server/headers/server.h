@@ -8,5 +8,6 @@ class RestServer {
     
     public:
         RestServer();
+        
         void start();
 };
