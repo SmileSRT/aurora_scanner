@@ -3,21 +3,27 @@
 #include <vector>
 #include "httplib.h"
 #include "./headers/server.h"
-#include "./headers/video_handler.h"
+#include "./headers/application.h"
 
 using namespace cv;
 
 void restThread() {
-    RestServer test;
-    test.start();
+    RestServer server;
+    server.process();
 }
 
 int main(int, char**) {
     // creating a server thread
     std::thread server(restThread);
 
-    VideoHandler handler;
-    handler.start();
+    Application app;
+    // handler.start();
 
+    std::string file = "/home/rodion/Docs/hl/aurora_scanner/static/jpg/attendant_list.jpg";
+    app.applyHoughLinesToJPG(file);
+
+    while(1) {
+
+    }
     return 0;
 }

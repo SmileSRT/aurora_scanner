@@ -5,6 +5,18 @@ set(OpenCV_DIR /path/to/opencv_install_dir/lib/cmake/opencv4)
 set(CMAKE_CXX_STANDARD 20)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
+# GoogleTest requires at least C++14
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include(FetchContent)
+FetchContent_Declare(
+    googletest
+    URL
+    https://github.com/google/googletest/archive/03597a01ee50ed33e9df
+    d640b249b4be3799d395.zip
+)
+
 include(FetchContent)
 
 FetchContent_Declare(cpp-httplib
@@ -21,7 +33,9 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 add_executable(${PROJECT_NAME} 
     src/server/main.cpp 
     src/server/server.cpp
-    src/server/video_handler.cpp
+    src/server/application.cpp
+    src/server/recogniser.cpp
+    src/server/table.cpp
 )
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBRARIES})
 

@@ -4,7 +4,7 @@
 
 RestServer::RestServer() {};
 
-void RestServer::start() {
+void RestServer::process() {
     httplib::Server app;
 
     app.Get("/lines", [](const httplib::Request &req, httplib::Response &res) {
@@ -12,9 +12,8 @@ void RestServer::start() {
     });
 
     app.Post("/lines", [](const httplib::Request &req, httplib::Response &res) {
-
-        res.set_content("ok", "text/plain");
+            res.set_content(req.body, "text/plain");
     });
 
-    app.listen(hostname, port);
+    app.listen(this->hostname, this->port);
 }
