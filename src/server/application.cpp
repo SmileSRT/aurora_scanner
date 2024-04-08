@@ -7,8 +7,7 @@
 #include <httplib.h>
 
 
-// using namespace cv;
-
+using namespace cv;
 
 Application::Application() {};
 
@@ -49,7 +48,6 @@ void Application::start() {
 };
 
 void Application::applyHoughLinesToJPG(std::string filepath) {
-    // const char* default_file = "attendant_list.jpg";
     // Load an image
     Mat src = imread( samples::findFile( filepath ), IMREAD_GRAYSCALE );
     Mat dst, cdst, cdstP;
@@ -66,6 +64,7 @@ void Application::applyHoughLinesToJPG(std::string filepath) {
     // Standard Hough Line Transform in Points
     std::vector<Vec4f> lines; // will hold the results of the detection
     HoughLinesP(dst, lines, 1, CV_PI/180, 150, 0, 0 ); // runs the actual detection
+
     // Draw the lines
     for (size_t i = 0; i < lines.size(); i++) {
         Vec4i l = lines[i];
@@ -103,6 +102,6 @@ void Application::sendLinesInJSON(std::vector<Vec4f> lines) {
 
 void Application::postJSONToAPI(std::string buff) {
     httplib::Client client(this->hostname, this->port);
-    // std::string str = "hi";
+
     client.Post("/lines", buff, "application/json");
 };

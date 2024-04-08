@@ -2,7 +2,10 @@
 #include <httplib.h>
 #include <iostream>
 
-RestServer::RestServer() {};
+RestServer::RestServer(std::string hostname, int port) {
+    this->hostname = hostname;
+    this->port = port;
+};
 
 void RestServer::process() {
     httplib::Server app;

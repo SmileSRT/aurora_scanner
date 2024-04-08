@@ -1,12 +1,13 @@
 #pragma once
 
 #include <string>
+#include <libconfig.h>
 
 class RestServer {
-    std::string hostname = "0.0.0.0";
-    int port = 8080;
+    std::string hostname;
+    int port;
     
     public:
-        RestServer();
+        RestServer(std::string hostname, int port);
         void process();
 };
