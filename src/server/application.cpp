@@ -1,15 +1,14 @@
-#include "./headers/video_handler.h"
+#include "./headers/application.h"
 #include "opencv2/opencv.hpp"
 #include <vector>
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
+#include <httplib.h>
 
-using namespace cv;
+Application::Application() {};
 
-VideoHandler::VideoHandler() {};
-
-void VideoHandler::start() {
+void Application::start() {
     VideoCapture cap(0); // Открываем камеру или файл
 
     if(!cap.isOpened()) { 
@@ -37,7 +36,6 @@ void VideoHandler::start() {
             line(edges, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(255, 0, 0), 3, LINE_AA);
         }
 
-        // this->sendLinesInJSON(lines);
         if(waitKey(30) >= 0) break;
 
         imshow("edges", edges);
@@ -46,7 +44,35 @@ void VideoHandler::start() {
     return;
 };
 
-void VideoHandler::sendLinesInJSON(std::vector<Vec4i> lines) {
+void Application::applyHoughLinesToJPG(std::string filepath) {
+    // const char* default_file = "attendant_list.jpg";
+    // Load an image
+    Mat src = imread( samples::findFile( filepath ), IMREAD_GRAYSCALE );
+    Mat dst, cdst, cdstP;
+
+    if(src.empty()) {
+        std::cout << "Could not read the image: " << std::endl;
+        return;
+    }
+    
+    Canny(src, dst, 50, 200, 3);
+    cvtColor(dst, cdst, COLOR_GRAY2BGR);
+    cdstP = cdst.clone();
+
+    // Standard Hough Line Transform in Points
+    std::vector<Vec4f> lines; // will hold the results of the detection
+    HoughLinesP(dst, lines, 1, CV_PI/180, 150, 0, 0 ); // runs the actual detection
+    // Draw the lines
+    for (size_t i = 0; i < lines.size(); i++) {
+        Vec4i l = lines[i];
+
+        line(cdst, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(255, 0, 0), 3, LINE_AA);
+    }
+
+    this->sendLinesInJSON(lines);
+};
+
+void Application::sendLinesInJSON(std::vector<Vec4f> lines) {
     rapidjson::Document document;
     document.SetObject();
 
@@ -68,7 +94,11 @@ void VideoHandler::sendLinesInJSON(std::vector<Vec4i> lines) {
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
     document.Accept(writer);
 
-    // Выводим JSON
-    std::cout << buffer.GetString() << std::endl;
+    this->postJSONToAPI(strdup(buffer.GetString()));
+};
 
+void Application::postJSONToAPI(std::string buff) {
+    httplib::Client client(this->hostname, this->port);
+    // std::string str = "hi";
+    client.Post("/lines", buff, "application/json");
 };
