@@ -6,7 +6,7 @@ Recogniser::Recogniser () {};
 
 Table Recogniser::recognise(cv::Mat frame) {
     // initialize the table
-    Table table(100, 100);
+    Table table(0, 0);
 
     return table;
 };

@@ -4,6 +4,9 @@
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
+#include "./headers/table.h"
+#include "./headers/recogniser.h"
+#include "./headers/tests.h"
 #include <httplib.h>
 
 Application::Application() {};
@@ -102,3 +105,25 @@ void Application::postJSONToAPI(std::string buff) {
     // std::string str = "hi";
     client.Post("/lines", buff, "application/json");
 };
+
+void Application::runTests(cv::Mat frame, int numberImg) {
+    Recogniser testRecognise;
+    Table tableForTest = testRecognise.recognise(frame);
+    Tests test(tableForTest);
+
+    switch (numberImg) {
+    case 0:
+        test.validateTable(0, 0);
+        break;
+    case 1:
+        test.validateTable(5, 2);
+        break;
+    case 2: 
+        test.validateTable(4, 1);
+    case 3:
+        test.validateTable(4, 4);
+
+    default:
+        break;
+    }
+}

@@ -16,4 +16,5 @@ class Application {
         void applyHoughLinesToJPG(std::string filepath);
         void postJSONToAPI(std::string buff);
         void sendLinesInJSON(std::vector<Vec4f> lines);
+        void runTests(cv::Mat frame, int numberFrame);
 };

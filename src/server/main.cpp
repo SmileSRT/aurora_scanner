@@ -17,13 +17,10 @@ int main(int, char**) {
     std::thread server(restThread);
 
     Application app;
+    app.start();
     // handler.start();
 
-    std::string file = "/home/rodion/Docs/hl/aurora_scanner/static/jpg/attendant_list.jpg";
+    std::string file = "/home/smile/projects/aurora_scanner/static/jpg/testImg0.jpg";
     app.applyHoughLinesToJPG(file);
-
-    while(1) {
-
-    }
     return 0;
 }
