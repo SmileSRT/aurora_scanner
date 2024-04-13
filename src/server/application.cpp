@@ -1,13 +1,13 @@
-#include "./headers/application.h"
 #include "opencv2/opencv.hpp"
-#include <vector>
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
-#include <httplib.h>
-#include "./headers/recogniser.h"
+#include "./headers/application.h"
 #include "./headers/table.h"
+#include "./headers/recogniser.h"
+#include <vector>
 
+#include <httplib.h>
 
 using namespace cv;
 
@@ -118,30 +118,3 @@ void Application::postJSONToAPI(std::string buff) {
 
     client.Post("/lines", buff, "application/json");
 };
-
-bool checkTest(int rowNum, int colNum, Table testTable) {
-    if (testTable.getColNum() != colNum && testTable.getRowNum() == rowNum) {
-        return false;
-    }
-
-    return true;
-};
-
-void Application::runTests(cv::Mat frame, int numberFrame) {
-    Recogniser test1;
-    Table test;
-    test = test1.recognise(frame);
-
-    switch (numberFrame) {
-    case 0:
-        if (checkTest(100, 100, test)) {
-            std::cout << "test done\n";
-        } else {
-            std::cout << "test losed\n";
-        }
-        break;
-
-    default:
-        break;
-    }
-}

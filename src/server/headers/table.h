@@ -16,4 +16,4 @@ class Table {
         int setNewColNum(int cols);
         int getRowNum();
         int getColNum();
-};
+};  

@@ -4,6 +4,7 @@
 #include "httplib.h"
 #include "./headers/server.h"
 #include "./headers/application.h"
+#include "./headers/tests.h"
 #include <libconfig.h++>
 #include <iomanip>
 #include <cstdlib>
@@ -36,7 +37,9 @@ int main(int, char**) {
     // creating a server thread
     std::thread api(restThread, hostname, port);
 
+
     Application app;
+    app.start();
     // handler.start();
 
     std::string file = (root_dir + "/static/jpg/attendant_list.jpg").c_str();
@@ -44,6 +47,12 @@ int main(int, char**) {
 
     Recogniser recg;
     Table myTab = recg.recognise(lines);
+
+    std::string testFile = "/home/smile/projects/aurora_scanner/static/jpg/testImg0.jpg";
+
+    Tests testApp;
+    cv::Mat testFrame = cv::imread( cv::samples::findFile(file), cv::IMREAD_GRAYSCALE);
+    testApp.runTests(testFrame, 0);
 
     while(1) {
 
