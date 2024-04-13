@@ -1,13 +1,15 @@
-#include "./headers/application.h"
 #include "opencv2/opencv.hpp"
-#include <vector>
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
+#include "./headers/application.h"
 #include "./headers/table.h"
 #include "./headers/recogniser.h"
-#include "./headers/tests.h"
+#include <vector>
+
 #include <httplib.h>
+
+using namespace cv;
 
 Application::Application() {};
 
@@ -48,7 +50,6 @@ void Application::start() {
 };
 
 void Application::applyHoughLinesToJPG(std::string filepath) {
-    // const char* default_file = "attendant_list.jpg";
     // Load an image
     Mat src = imread( samples::findFile( filepath ), IMREAD_GRAYSCALE );
     Mat dst, cdst, cdstP;
@@ -65,6 +66,7 @@ void Application::applyHoughLinesToJPG(std::string filepath) {
     // Standard Hough Line Transform in Points
     std::vector<Vec4f> lines; // will hold the results of the detection
     HoughLinesP(dst, lines, 1, CV_PI/180, 150, 0, 0 ); // runs the actual detection
+
     // Draw the lines
     for (size_t i = 0; i < lines.size(); i++) {
         Vec4i l = lines[i];
@@ -97,33 +99,13 @@ void Application::sendLinesInJSON(std::vector<Vec4f> lines) {
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
     document.Accept(writer);
 
+    // std::cout << buffer.GetString() << std::endl;
+
     this->postJSONToAPI(strdup(buffer.GetString()));
 };
 
 void Application::postJSONToAPI(std::string buff) {
     httplib::Client client(this->hostname, this->port);
-    // std::string str = "hi";
+
     client.Post("/lines", buff, "application/json");
 };
-
-void Application::runTests(cv::Mat frame, int numberImg) {
-    Recogniser testRecognise;
-    Table tableForTest = testRecognise.recognise(frame);
-    Tests test(tableForTest);
-
-    switch (numberImg) {
-    case 0:
-        test.validateTable(0, 0);
-        break;
-    case 1:
-        test.validateTable(5, 2);
-        break;
-    case 2: 
-        test.validateTable(4, 1);
-    case 3:
-        test.validateTable(4, 4);
-
-    default:
-        break;
-    }
-}

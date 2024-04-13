@@ -1,5 +1,4 @@
 #include "./headers/recogniser.h"
-// #include "./headers/table.h"
 
 
 Recogniser::Recogniser () {};
