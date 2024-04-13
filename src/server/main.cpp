@@ -20,6 +20,8 @@ void getApplicationConfig() {
 
 }
 
+// setup func
+
 int main(int, char**) {
     // setting up the root directory
     std::filesystem::path filePath(__FILE__);
@@ -63,6 +65,7 @@ int main(int, char**) {
     // handler.start();
 
     std::string file = (root_str + "/static/jpg/attendant_list.jpg").c_str();
+    std::cout << (root_str + "/static/jpg/attendant_list.jpg\n").c_str();
     app.applyHoughLinesToJPG(file);
 
     while(1) {

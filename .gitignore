@@ -1,3 +1,5 @@
 build
 opencv
 .vscode
+static/jpg/attendant_list.jpg
+src/server/config.cfg

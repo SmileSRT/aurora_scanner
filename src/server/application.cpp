@@ -5,6 +5,8 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 #include <httplib.h>
+#include "./headers/recogniser.h"
+#include "./headers/table.h"
 
 
 using namespace cv;
@@ -97,6 +99,8 @@ void Application::sendLinesInJSON(std::vector<Vec4f> lines) {
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
     document.Accept(writer);
 
+    std::cout << buffer.GetString() << std::endl;
+
     this->postJSONToAPI(strdup(buffer.GetString()));
 };
 
@@ -105,3 +109,30 @@ void Application::postJSONToAPI(std::string buff) {
 
     client.Post("/lines", buff, "application/json");
 };
+
+bool checkTest(int rowNum, int colNum, Table testTable) {
+    if (testTable.getColNum() != colNum && testTable.getRowNum() == rowNum) {
+        return false;
+    }
+
+    return true;
+};
+
+void Application::runTests(cv::Mat frame, int numberFrame) {
+    Recogniser test1;
+    Table test;
+    test = test1.recognise(frame);
+
+    switch (numberFrame) {
+    case 0:
+        if (checkTest(100, 100, test)) {
+            std::cout << "test done\n";
+        } else {
+            std::cout << "test losed\n";
+        }
+        break;
+
+    default:
+        break;
+    }
+}
