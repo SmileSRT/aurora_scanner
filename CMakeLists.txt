@@ -34,6 +34,7 @@ add_executable(${PROJECT_NAME}
     src/server/application.cpp
     src/server/recogniser.cpp
     src/server/table.cpp
+    src/server/config.cpp
 )
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} config++)

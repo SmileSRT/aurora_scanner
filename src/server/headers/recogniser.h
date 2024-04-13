@@ -11,4 +11,7 @@ class Recogniser {
     public:
         Recogniser();
         virtual Table recognise(cv::Mat frame);
+        cv::Mat getCell(int col, int row);
+        bool isEmptyCell(int col, int row);
+        bool isEmptyCellImg(cv::Mat m);
 };
