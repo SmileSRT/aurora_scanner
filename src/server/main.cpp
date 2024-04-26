@@ -1,4 +1,3 @@
-#include "opencv2/opencv.hpp"
 #include <rapidjson/document.h>
 #include <vector>
 #include "httplib.h"
@@ -58,13 +57,10 @@ int main(int, char**) {
     }
 
     Application app;
-    app.start();
     // handler.start();
 
     std::string file = "/home/smile/projects/aurora_scanner/static/jpg/attendant_list.jpg";
     app.applyHoughLinesToJPG(file);
-
-    std::string testFile = "/home/smile/projects/aurora_scanner/static/jpg/testImg0.jpg";
 
     Tests testApp;
     cv::Mat testFrame = cv::imread( cv::samples::findFile(file), cv::IMREAD_GRAYSCALE);

@@ -1,4 +1,3 @@
-# cmake_minimum_required(VERSION 3.22.1)
 project(aurora_scanner)
 
 set(OpenCV_DIR /path/to/opencv_install_dir/lib/cmake/opencv4)
@@ -24,10 +23,8 @@ FetchContent_Declare(cpp-httplib
 FetchContent_Populate(cpp-httplib)
 
 find_package(OpenCV REQUIRED core highgui imgproc)
-add_executable(${PROJECT_NAME} src/server/main.cpp)
-add_executable(${PROJECT_NAME} src/server/server.cpp)
 include_directories(${OpenCV_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
+# target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
 
 # Initialize targets
 add_executable(${PROJECT_NAME} 
