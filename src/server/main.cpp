@@ -9,6 +9,9 @@
 #include <cstdlib>
 #include <string>
 #include <filesystem>
+#include "./headers/recogniser.h"
+#include "./headers/table.h"
+#include "./headers/config.h"
 
 
 void restThread(std::string hostname, int port) {
@@ -16,51 +19,32 @@ void restThread(std::string hostname, int port) {
     api.process();
 }
 
-void getApplicationConfig() {
-
-}
-
-// setup func
-
 int main(int, char**) {
     // setting up the root directory
     std::filesystem::path filePath(__FILE__);
     std::filesystem::path rootPath = filePath.parent_path().parent_path().parent_path();
-    std::string root_str = rootPath.string();
+    std::string root_dir = rootPath.string();
 
     std::string hostname;
     int port;
-
     // setting up configuration file
-    libconfig::Config cfg;
+    
+    Config cfg;
+    cfg.readConfigFile((root_dir + "/src/server/config.cfg").c_str(), cfg);
+    cfg.extractServerConfig(cfg, hostname, port);
 
-    try {
-        cfg.readFile((root_str + "/src/server/config.cfg").c_str());
-    } catch(const libconfig::FileIOException &fioex) {
-        std::cerr << "Failed to read the configuration file." << std::endl;
-        return -1;
-    } catch(const libconfig::ParseException &pex) {
-        std::cerr << "Failed to parse the configuration file. Line " << pex.getLine() << ": " << pex.getError() << std::endl;
-        return -1;
-    }
+    // creating a server thread
+    std::thread api(restThread, hostname, port);
 
-    // assign server to root
-    const libconfig::Setting& root = cfg.getRoot();
-
-    try {
-        const libconfig::Setting& server = root["server"];
-        server.lookupValue("hostname", hostname);
-        server.lookupValue("port", port);
-    } catch(const libconfig::SettingNotFoundException &nfex) {
-        std::cerr << "Ошибка при извлечении значений из файла конфигурации." << std::endl;
-        return -1;
-    }
 
     Application app;
     // handler.start();
 
-    std::string file = "/home/smile/projects/aurora_scanner/static/jpg/attendant_list.jpg";
-    app.applyHoughLinesToJPG(file);
+    std::string file = (root_dir + "/static/jpg/attendant_list.jpg").c_str();
+    cv::Mat lines = app.applyHoughLinesToJPG(file);
+
+    Recogniser recg;
+    Table myTab = recg.recognise(lines);
 
     Tests testApp;
     cv::Mat testFrame = cv::imread( cv::samples::findFile(file), cv::IMREAD_GRAYSCALE);
@@ -70,8 +54,6 @@ int main(int, char**) {
 
     }
 
-    // creating a server thread
-    std::thread api(restThread, hostname, port);
     api.join(); // to append arguments to a restThread function
 
     return 0;
