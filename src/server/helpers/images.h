@@ -1,0 +1,1 @@
+enum class Images {testImg0, testImg1, testImg2, testImg3, list};
